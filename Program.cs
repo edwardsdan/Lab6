@@ -16,14 +16,14 @@ namespace Lab6
             string x = Console.ReadLine();
             while (loop == true)
             {
-                if (x.Length < 1)
+                if (x.Length >= 1 && Regex.Match(x, @"\w").Success)
                 {
-                    Console.WriteLine("Sorry! Try again!");
-                    x = Console.ReadLine();
+                    loop = false;
                 }
                 else
                 {
-                    loop = false;
+                    Console.WriteLine("Sorry! Try again!");
+                    x = Console.ReadLine();
                 }
             }
             return x;
@@ -32,9 +32,14 @@ namespace Lab6
         public static void Print(string[] x)
         {
             char[] vowels = { 'a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U' };
+            char[] punctuation = { '!', ',', '.', ';', ':', '?' };
 
             for (int i = 0; i < x.Length; i++)
             {
+                if (Regex.IsMatch(x[i], @"(\!|\,|\.|\;|\:|\?)$") == true)
+                {
+                    x[i].LastIndexOfAny(punctuation); ////////// work in progress for removing and re-adding punctuation
+                }
                 if (Regex.IsMatch(x[i], @"^[a-zA-Z\']+$") == true)
                 {
                     if (x[i].IndexOfAny(vowels) == 0)
@@ -44,17 +49,22 @@ namespace Lab6
                     }
                     else
                     {
-                        int vowelIndex = x[i].IndexOfAny(vowels);
-                        string toAppend = x[i].Substring(0, vowelIndex);
-                        Console.Write(x[i].Remove(0, vowelIndex) + toAppend + "ay ");
+                        PrintConst(x, i, vowels);
                         continue;
                     }
                 }
-                if (Regex.IsMatch(x[i], @"^[a-zA-Z\u0021-\u0040]+$") == true)
+                else if (Regex.IsMatch(x[i], @"^[a-zA-Z\u0021-\u0040]+$") == true)
                 {
                     Console.Write(x[i] + " ");
                 }
             }
+        }
+        
+        public static void PrintConst(string[] x, int i, char[] y)
+        {
+            int vowelIndex = x[i].IndexOfAny(y);
+            string toAppend = x[i].Substring(0, vowelIndex);
+            Console.Write(x[i].Remove(0, vowelIndex) + toAppend + "ay ");
         }
 
         static void Main(string[] args)
@@ -68,8 +78,7 @@ namespace Lab6
                 Console.WriteLine();
 
                 Console.WriteLine("Translate another word or phrase? (y/n)");
-                string response = Console.ReadLine();
-                if (string.Compare(response, "y", true) == 0)
+                if (string.Compare(Console.ReadLine(), "y", true) == 0)
                 {
                     Console.Clear();
                 }
